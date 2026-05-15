@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState, type ComponentType } from "react";
 import manifest from "@/src/generated/manifest.json";
 import * as Icons from "@/src/generated";
@@ -24,7 +25,8 @@ export default function Gallery() {
   const visible = filtered.slice(0, limit);
 
   return (
-    <div className="mx-auto w-full max-w-[1180px] px-6 py-12 sm:px-10">
+    <div className="editorial min-h-screen">
+      <div className="mx-auto w-full max-w-[1180px] px-6 py-12 sm:px-10">
       {/* Header — eyebrow / wordmark / tagline */}
       <header className="space-y-5 border-b border-line pb-10">
         <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.18em] text-ink-soft">
@@ -46,12 +48,12 @@ export default function Gallery() {
           source.
         </p>
         <div className="flex gap-3 pt-1">
-          <a
+          <Link
             href="/docs"
             className="border border-ink bg-ink px-4 py-2 text-xs uppercase tracking-[0.12em] text-paper transition-colors hover:bg-accent hover:border-accent"
           >
             Read the docs
-          </a>
+          </Link>
           <a
             href="https://github.com"
             className="border border-ink px-4 py-2 text-xs uppercase tracking-[0.12em] transition-colors hover:bg-ink hover:text-paper"
@@ -100,14 +102,7 @@ export default function Gallery() {
             {visible.map((m) => {
               const Icon = IconMap[m.component];
               if (!Icon) return null;
-              return (
-                <IconCell
-                  key={m.name}
-                  name={m.name}
-                  component={m.component}
-                  Icon={Icon}
-                />
-              );
+              return <IconCell key={m.name} name={m.name} Icon={Icon} />;
             })}
           </div>
         )}
@@ -139,6 +134,7 @@ export default function Gallery() {
           <code>bun run generate</code>
         </span>
       </footer>
+      </div>
     </div>
   );
 }

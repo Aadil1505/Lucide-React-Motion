@@ -1,9 +1,16 @@
 @import "tailwindcss";
+@import "fumadocs-ui/css/neutral.css";
+@import "fumadocs-ui/css/preset.css";
+
+/* Tailwind 4 needs to know which files to scan for utility class names. */
+@source "../node_modules/fumadocs-ui/dist/**/*.js";
 
 /**
  * Editorial "spec sheet" palette: cream paper, deep ink, orange accent.
  * Exposed as Tailwind theme tokens via @theme inline so utility classes
  * like `bg-paper`, `text-ink`, `border-line`, `text-accent` just work.
+ * The Plex Mono font is registered as --font-mono only - we deliberately
+ * do NOT alias --font-sans, so Fumadocs's UI keeps its default sans typeface.
  */
 :root {
   --paper: #e8e4dc;
@@ -24,15 +31,17 @@
   --color-line-strong: var(--line-strong);
   --color-accent: var(--accent);
   --font-mono: var(--font-plex-mono);
-  --font-sans: var(--font-plex-mono);
 }
 
-body {
+/**
+ * Editorial wrapper - used by the gallery page only. Scoped so the docs
+ * (Fumadocs UI) keeps its own clean neutral theme.
+ */
+.editorial {
   background-color: var(--paper);
   color: var(--ink);
   font-family: var(--font-plex-mono), ui-monospace, SFMono-Regular, Menlo,
     monospace;
-  /* Subtle dot grid on the paper. */
   background-image: radial-gradient(
     circle at 1px 1px,
     rgba(26, 26, 24, 0.08) 1px,

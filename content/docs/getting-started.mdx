@@ -1,0 +1,77 @@
+---
+title: Getting Started
+description: Install lucide-react-motion and render your first animated icon.
+---
+
+import { Heart } from "@/src/generated";
+
+## Installation
+
+```bash tab="bun"
+bun add lucide-react-motion
+```
+
+```bash tab="npm"
+npm install lucide-react-motion
+```
+
+```bash tab="pnpm"
+pnpm add lucide-react-motion
+```
+
+```bash tab="yarn"
+yarn add lucide-react-motion
+```
+
+Peer dependencies: `react`, `react-dom`, `motion`.
+
+## Your first icon
+
+```tsx
+import { Heart } from "lucide-react-motion";
+
+export default function Page() {
+  return <Heart size={32} />;
+}
+```
+
+<Preview>
+  <Heart size={32} />
+</Preview>
+
+Hover it. The icon draws itself on. That's the default behavior — no configuration required.
+
+## Migrating from `lucide-react`
+
+If your project already uses `lucide-react`, the change is one line:
+
+```diff
+- import { Heart, Search, ArrowRight } from "lucide-react";
++ import { Heart, Search, ArrowRight } from "lucide-react-motion";
+```
+
+Every `lucide-react` prop works identically:
+
+- `size`, `color`, `strokeWidth`, `absoluteStrokeWidth`
+- `className`, `style`, `onClick`, all standard SVG attributes
+- `ref` — exposes a `MotionIconHandle` (`play`, `reset`, `node`); see [`trigger="manual"`](/docs/triggers#manual)
+
+Each icon is also exported with an `Icon` suffix alias (`Heart` / `HeartIcon`), so either convention works.
+
+## What's different
+
+Beyond `lucide-react`'s API, this library adds **motion props** ([reference](/docs/api)):
+
+- `trigger` — when/how the animation fires (`hover`, `click`, `mount`, `in-view`, `parent-hover`, `manual`)
+- `duration`, `delay`, `stagger`, `easing`, `repeat` — timing controls
+- `onLeave` — what happens when hover ends (`complete`, `snap`, `redraw`)
+- `reducedMotion` — respect / force / disable the OS accessibility preference
+- `variants` — escape hatch to replace the draw motion entirely
+
+All optional. The defaults are sensible — installing the package and using icons unchanged gives you good motion out of the box.
+
+## Next steps
+
+- [Usage](/docs/usage) — sizing, color, stroke width
+- [Animation](/docs/animation) — timing controls
+- [Triggers](/docs/triggers) — six ways to fire the animation

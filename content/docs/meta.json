@@ -1,0 +1,15 @@
+{
+  "title": "Docs",
+  "pages": [
+    "index",
+    "getting-started",
+    "usage",
+    "animation",
+    "triggers",
+    "leave-behavior",
+    "accessibility",
+    "defaults",
+    "custom-motion",
+    "api"
+  ]
+}

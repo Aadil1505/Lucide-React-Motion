@@ -1,0 +1,134 @@
+---
+title: Animation
+description: Timing controls - duration, delay, stagger, easing, repeat.
+---
+
+import { Heart, Rocket, Settings, Sparkles, Star } from "@/src/generated";
+
+Five timing props control how the draw animation plays. All are optional with sensible defaults.
+
+| Prop       | Type    | Default      | Description                                      |
+| ---------- | ------- | ------------ | ------------------------------------------------ |
+| `duration` | number  | `0.55`       | Seconds the draw takes per stroke                |
+| `delay`    | number  | `0`          | Seconds to wait before drawing starts            |
+| `stagger`  | number  | `0.12`       | Per-stroke delay increment (cascade)             |
+| `easing`   | string  | `"easeInOut"` | Motion easing curve                              |
+| `repeat`   | number  | `0`          | How many extra times to repeat — `Infinity` loops |
+
+## `duration`
+
+How long each stroke takes to draw, in seconds.
+
+<Preview wide>
+  <Demo label="0.15s"><Heart size={36} duration={0.15} /></Demo>
+  <Demo label="0.55s (default)"><Heart size={36} /></Demo>
+  <Demo label="2.5s"><Heart size={36} duration={2.5} /></Demo>
+</Preview>
+
+```tsx
+<Heart duration={0.15} />
+<Heart />
+<Heart duration={2.5} />
+```
+
+## `delay`
+
+Wait this many seconds before drawing starts. Useful for sequencing several icons.
+
+<Preview wide>
+  <Demo label="delay=0"><Heart size={36} /></Demo>
+  <Demo label="delay=0.5"><Heart size={36} delay={0.5} /></Demo>
+  <Demo label="delay=1"><Heart size={36} delay={1} /></Demo>
+</Preview>
+
+```tsx
+<Heart delay={0} />
+<Heart delay={0.5} />
+<Heart delay={1} />
+```
+
+## `stagger`
+
+Per-stroke delay increment. Higher values draw strokes one after the other; `0` draws everything at once.
+
+<Preview wide>
+  <Demo label="stagger=0"><Sparkles size={36} stagger={0} /></Demo>
+  <Demo label="stagger=0.12 (default)"><Sparkles size={36} /></Demo>
+  <Demo label="stagger=0.4"><Sparkles size={36} stagger={0.4} /></Demo>
+</Preview>
+
+```tsx
+<Sparkles stagger={0} />
+<Sparkles />
+<Sparkles stagger={0.4} />
+```
+
+## `easing`
+
+Motion easing curve. Accepts named curves (`"linear"`, `"easeIn"`, `"easeOut"`, `"easeInOut"`, `"circIn"`, etc.) or a cubic-bezier tuple.
+
+<Preview wide>
+  <Demo label='"linear"'><Heart size={36} easing="linear" /></Demo>
+  <Demo label='"easeIn"'><Heart size={36} easing="easeIn" /></Demo>
+  <Demo label='"easeOut"'><Heart size={36} easing="easeOut" /></Demo>
+  <Demo label='"easeInOut" (default)'><Heart size={36} /></Demo>
+</Preview>
+
+```tsx
+<Heart easing="linear" />
+<Heart easing="easeIn" />
+<Heart easing="easeOut" />
+<Heart />
+```
+
+For a cubic-bezier curve:
+
+```tsx
+<Heart easing={[0.16, 1, 0.3, 1]} />
+```
+
+## `repeat`
+
+How many times to repeat the animation after the first play. `Infinity` loops forever (great for loaders, status indicators).
+
+<Preview wide>
+  <Demo label="repeat=0 (default)"><Heart size={36} /></Demo>
+  <Demo label="repeat=2"><Heart size={36} repeat={2} /></Demo>
+  <Demo label="repeat=Infinity, onLeave=snap"><Settings size={36} repeat={Infinity} duration={1.2} onLeave="snap" /></Demo>
+</Preview>
+
+```tsx
+<Heart />
+<Heart repeat={2} />
+<Settings repeat={Infinity} duration={1.2} onLeave="snap" />
+```
+
+<Callout type="warn" title="repeat=Infinity + hover">
+  An infinite animation never "completes" — and the default [`onLeave`](/docs/leave-behavior) is `"complete"`, which means "let the animation finish naturally." Combined, that means a hover-triggered infinite loop **keeps running forever after you un-hover**.
+
+  Two ways to fix it:
+
+  - **Make leave cancel** with `onLeave="snap"` (the demo above) — the loop stops when the cursor leaves.
+  - **Decouple from hover** with `trigger="mount"` — the icon loops continuously from page load, regardless of mouse.
+</Callout>
+
+## Loading-spinner pattern
+
+```tsx
+<Settings
+  trigger="mount"
+  repeat={Infinity}
+  duration={1.2}
+  easing="linear"
+/>
+```
+
+## App-wide timing
+
+Set defaults once via the [`<MotionIconConfig>` provider](/docs/defaults) so you don't repeat yourself:
+
+```tsx
+<MotionIconConfig duration={0.3} stagger={0.05} easing="easeOut">
+  <App />
+</MotionIconConfig>
+```

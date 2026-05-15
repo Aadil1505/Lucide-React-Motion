@@ -1,0 +1,98 @@
+---
+title: Usage
+description: Sizing, color, stroke width, and styling - identical to lucide-react.
+---
+
+import { Heart, Search, ArrowRight } from "@/src/generated";
+
+Every styling prop works the same as `lucide-react`. Hover any demo to see motion still applies.
+
+## Size
+
+`size` (default `24`) sets the rendered pixel size of the SVG.
+
+<Preview wide>
+  <Demo label="size=16"><Heart size={16} /></Demo>
+  <Demo label="size=24"><Heart size={24} /></Demo>
+  <Demo label="size=48"><Heart size={48} /></Demo>
+  <Demo label="size=96"><Heart size={96} /></Demo>
+</Preview>
+
+```tsx
+<Heart size={16} />
+<Heart size={24} />
+<Heart size={48} />
+<Heart size={96} />
+```
+
+## Color
+
+`color` sets the stroke color. Default is `currentColor`, so the icon inherits the parent's `color` value — which means **Tailwind text utilities work directly**.
+
+<Preview wide>
+  <Heart size={32} color="#ef4444" />
+  <Heart size={32} color="#3b82f6" />
+  <Heart size={32} className="text-emerald-500" />
+  <Heart size={32} className="text-amber-500" />
+</Preview>
+
+```tsx
+<Heart size={32} color="#ef4444" />
+<Heart size={32} color="#3b82f6" />
+<Heart size={32} className="text-emerald-500" />
+<Heart size={32} className="text-amber-500" />
+```
+
+## Stroke width
+
+`strokeWidth` (default `2`) controls line thickness.
+
+<Preview wide>
+  <Demo label="strokeWidth=1"><Heart size={36} strokeWidth={1} /></Demo>
+  <Demo label="strokeWidth=2"><Heart size={36} strokeWidth={2} /></Demo>
+  <Demo label="strokeWidth=3"><Heart size={36} strokeWidth={3} /></Demo>
+</Preview>
+
+```tsx
+<Heart size={36} strokeWidth={1} />
+<Heart size={36} strokeWidth={2} />
+<Heart size={36} strokeWidth={3} />
+```
+
+### `absoluteStrokeWidth`
+
+By default the stroke scales with `size`. Pass `absoluteStrokeWidth` to keep the visible stroke pixel-constant regardless of size — useful when you want a thin outline at large sizes.
+
+<Preview wide>
+  <Demo label="size=64 default"><Heart size={64} strokeWidth={2} /></Demo>
+  <Demo label="size=64 absolute"><Heart size={64} strokeWidth={2} absoluteStrokeWidth /></Demo>
+</Preview>
+
+```tsx
+<Heart size={64} strokeWidth={2} />
+<Heart size={64} strokeWidth={2} absoluteStrokeWidth />
+```
+
+## className and style
+
+Both spread onto the underlying `<svg>`. Use `className` for Tailwind / CSS classes and `style` for inline overrides.
+
+```tsx
+<Heart className="text-rose-500 hover:text-rose-600 transition-colors" />
+
+<Heart style={{ filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.1))" }} />
+```
+
+## Inside a button
+
+The animation is hover-triggered on the icon by default. If you want the **button's** hover to trigger the icon, see [`trigger="parent-hover"`](/docs/triggers#parent-hover).
+
+```tsx
+<button
+  data-motion-icon-group
+  className="inline-flex items-center gap-2 rounded-md bg-zinc-900 px-4 py-2 text-white"
+>
+  Continue
+  <ArrowRight size={16} trigger="parent-hover" />
+</button>
+```

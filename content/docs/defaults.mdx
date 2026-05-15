@@ -1,0 +1,138 @@
+---
+title: App-wide defaults
+description: Set shared icon props with the MotionIconConfig provider.
+---
+
+import { Heart, Rocket, Settings } from "@/src/generated";
+import { MotionIconConfig } from "@/src/engine";
+
+`<MotionIconConfig>` is a React Context provider that sets default props for every icon in its subtree. Per-icon props always win — the provider is a fallback layer.
+
+## Resolution order
+
+For each prop, the engine resolves in this order:
+
+1. **Per-icon prop** (highest priority)
+2. **Nearest `<MotionIconConfig>` value**
+3. **Built-in default** (lowest priority)
+
+## Basic usage
+
+Wrap your app (or a section of it) and pass any of the [config-eligible props](#what-it-accepts):
+
+```tsx
+import { MotionIconConfig } from "lucide-react-motion";
+
+export default function RootLayout({ children }) {
+  return (
+    <MotionIconConfig duration={0.3} stagger={0.05} easing="easeOut">
+      {children}
+    </MotionIconConfig>
+  );
+}
+```
+
+Now every icon inside inherits those timing defaults.
+
+## Live example
+
+<Preview wide>
+  <MotionIconConfig duration={0.2} stagger={0.04} easing="linear">
+    <Demo label="inherits"><Heart size={36} /></Demo>
+    <Demo label="inherits"><Settings size={36} /></Demo>
+    <Demo label="overrides duration"><Rocket size={36} duration={1.4} /></Demo>
+  </MotionIconConfig>
+</Preview>
+
+```tsx
+<MotionIconConfig duration={0.2} stagger={0.04} easing="linear">
+  <Heart size={36} />                         {/* uses config */}
+  <Settings size={36} />                      {/* uses config */}
+  <Rocket size={36} duration={1.4} />         {/* overrides duration */}
+</MotionIconConfig>
+```
+
+## Nesting
+
+Providers can nest. Inner values override outer ones for keys you re-pass.
+
+```tsx
+<MotionIconConfig duration={0.3} reducedMotion="system">
+  {/* All icons here use duration=0.3, reducedMotion=system */}
+
+  <section>
+    <MotionIconConfig duration={0.8}>
+      {/* Icons here use duration=0.8, but still reducedMotion=system */}
+    </MotionIconConfig>
+  </section>
+</MotionIconConfig>
+```
+
+## What it accepts
+
+Every motion-related and styling prop on `<DrawIcon />`:
+
+```tsx
+interface MotionIconConfigValue {
+  size?: number;
+  color?: string;
+  strokeWidth?: number;
+  absoluteStrokeWidth?: boolean;
+  duration?: number;
+  delay?: number;
+  stagger?: number;
+  easing?: Easing | Easing[];
+  repeat?: number;
+  trigger?: Trigger;
+  onLeave?: OnLeave;
+  reducedMotion?: ReducedMotion;
+}
+```
+
+Props specific to a single icon (`nodes`, `className`, `style`, `onClick`, `variants`, `ref`) are **not** propagated — they wouldn't make sense as shared defaults.
+
+## Recommended patterns
+
+### Standardize timing across your app
+
+```tsx
+<MotionIconConfig duration={0.35} stagger={0.04} easing="easeOut">
+  <App />
+</MotionIconConfig>
+```
+
+### Make all buttons use parent-hover
+
+Wrap a sub-tree that contains primarily buttons:
+
+```tsx
+<MotionIconConfig trigger="parent-hover" onLeave="redraw">
+  <ButtonRow />
+</MotionIconConfig>
+```
+
+### Config file pattern
+
+Put your defaults in a regular module and pass them in:
+
+```ts title="lib/icon-config.ts"
+export const iconDefaults = {
+  duration: 0.35,
+  stagger: 0.04,
+  easing: "easeOut",
+  reducedMotion: "system",
+} as const;
+```
+
+```tsx title="app/layout.tsx"
+import { MotionIconConfig } from "lucide-react-motion";
+import { iconDefaults } from "@/lib/icon-config";
+
+export default function RootLayout({ children }) {
+  return (
+    <MotionIconConfig {...iconDefaults}>
+      {children}
+    </MotionIconConfig>
+  );
+}
+```

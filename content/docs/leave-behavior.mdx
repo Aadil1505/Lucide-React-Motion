@@ -1,0 +1,81 @@
+---
+title: Leave behavior
+description: What happens when hover or parent-hover ends - complete, snap, redraw.
+---
+
+import { Heart, Send } from "@/src/generated";
+
+The `onLeave` prop controls what happens when the trigger ends mid-animation (mouse leaves the icon or parent group). Default is `"complete"`.
+
+```tsx
+<Heart onLeave="complete" />   // default
+<Heart onLeave="snap" />
+<Heart onLeave="redraw" />
+```
+
+`onLeave` only applies to `trigger="hover"` and `trigger="parent-hover"` — the other triggers have no leave concept.
+
+---
+
+## `complete` (default)
+
+The in-progress draw finishes naturally. The most natural-feeling default for stroke animations — strokes never get cut off mid-line.
+
+<Preview>
+  <Heart size={48} onLeave="complete" />
+</Preview>
+
+```tsx
+<Heart onLeave="complete" />
+```
+
+Hover, then quickly move the cursor away — notice the stroke completes drawing even after you leave.
+
+---
+
+## `snap`
+
+Cancels the running animation immediately and snaps the icon back to its fully-drawn rest state.
+
+<Preview>
+  <Heart size={48} onLeave="snap" />
+</Preview>
+
+```tsx
+<Heart onLeave="snap" />
+```
+
+Use this when you want a deterministic "icon is reset" feel — for example, in dense UIs where many icons are hovered in quick succession.
+
+---
+
+## `redraw`
+
+Replays the draw animation when the trigger ends. The icon draws **both on entry and on leave**, creating a continuous "always-drawing" feel.
+
+<Preview>
+  <Heart size={48} onLeave="redraw" />
+</Preview>
+
+```tsx
+<Heart onLeave="redraw" />
+```
+
+Pairs especially well with `trigger="parent-hover"` on buttons:
+
+<Preview>
+  <button
+    data-motion-icon-group
+    className="inline-flex items-center gap-2 rounded-md border border-fd-border bg-fd-card px-4 py-2 text-sm transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground"
+  >
+    Continuous motion
+    <Send size={18} trigger="parent-hover" onLeave="redraw" />
+  </button>
+</Preview>
+
+```tsx
+<button data-motion-icon-group>
+  Continuous motion
+  <Send trigger="parent-hover" onLeave="redraw" />
+</button>
+```

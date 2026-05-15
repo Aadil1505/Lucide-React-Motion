@@ -1,0 +1,66 @@
+---
+title: Accessibility
+description: Respect the OS prefers-reduced-motion setting.
+---
+
+import { Heart } from "@/src/generated";
+
+The `reducedMotion` prop controls how the library responds to the user's OS-level reduced-motion preference (`prefers-reduced-motion: reduce`). Default is `"system"`, which respects the OS setting.
+
+## Three modes
+
+```tsx
+<Heart reducedMotion="system" />   // default — respect OS setting
+<Heart reducedMotion="always" />   // force animation off
+<Heart reducedMotion="never" />    // force animation on (use carefully)
+```
+
+<Preview wide>
+  <Demo label='"system" (default)'><Heart size={36} /></Demo>
+  <Demo label='"always"'><Heart size={36} reducedMotion="always" /></Demo>
+  <Demo label='"never"'><Heart size={36} reducedMotion="never" /></Demo>
+</Preview>
+
+## How it works
+
+When reduced motion is active (either by OS setting with `"system"`, or by the `"always"` override):
+
+- All trigger effects (`mount`, `in-view`, `parent-hover`) become no-ops
+- `hover` and `click` triggers don't fire their animation
+- The icon renders in its **rest state** — fully drawn, identical to a static `lucide-react` icon
+
+The component is functionally identical to a static SVG icon in this mode. Layout, sizing, colors, and click handlers all still work.
+
+## Testing it
+
+**macOS** — System Settings → Accessibility → Display → "Reduce motion"
+
+**Windows** — Settings → Accessibility → Visual effects → Animation effects → Off
+
+**iOS** — Settings → Accessibility → Motion → Reduce Motion
+
+**Chrome DevTools** — Open DevTools → Rendering panel (⌘⇧P → "Show Rendering") → Emulate CSS media feature → `prefers-reduced-motion: reduce`
+
+After toggling, **refresh the page**. The `"system"` and `"always"` demos above should now be static; the `"never"` demo still animates on hover.
+
+## App-wide
+
+Set it once via the [`<MotionIconConfig>` provider](/docs/defaults):
+
+```tsx
+<MotionIconConfig reducedMotion="system">
+  <App />
+</MotionIconConfig>
+```
+
+Or override globally to keep animations on for an internal tool where you've validated motion is fine:
+
+```tsx
+<MotionIconConfig reducedMotion="never">
+  <App />
+</MotionIconConfig>
+```
+
+<Callout type="warn" title="Use 'never' sparingly">
+  Overriding the OS preference disrespects an explicit accessibility choice your user made. Default to `"system"` unless you have a specific reason.
+</Callout>

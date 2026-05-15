@@ -1,0 +1,171 @@
+---
+title: Triggers
+description: Six ways to fire the animation - hover, click, mount, in-view, parent-hover, manual.
+---
+
+import { Bell, Heart, Rocket, Send, Star, Zap } from "@/src/generated";
+import { ManualTrigger } from "@/components/docs/manual-trigger";
+
+The `trigger` prop selects when the animation fires. Default is `"hover"`.
+
+```tsx
+<Heart trigger="hover" />       // default
+<Heart trigger="click" />
+<Heart trigger="mount" />
+<Heart trigger="in-view" />
+<Heart trigger="parent-hover" />
+<Heart trigger="manual" />
+```
+
+---
+
+## `hover` (default)
+
+Animation plays while the cursor is over the icon. Standard behavior.
+
+<Preview>
+  <Heart size={48} trigger="hover" />
+</Preview>
+
+```tsx
+<Heart trigger="hover" />
+```
+
+**On touch devices** there's no hover. Use [`click`](#click) or [`mount`](#mount) for mobile-friendly motion.
+
+---
+
+## `click`
+
+Replays the draw on every click. The cursor changes to `pointer` automatically.
+
+<Preview>
+  <Bell size={48} trigger="click" />
+</Preview>
+
+```tsx
+<Bell trigger="click" />
+```
+
+Useful for action confirmations: success checkmarks, "added to cart," etc.
+
+---
+
+## `mount`
+
+Animates once on first paint. Great for hero icons or page intros.
+
+<Preview>
+  <Star size={48} trigger="mount" />
+</Preview>
+
+```tsx
+<Star trigger="mount" />
+```
+
+Refresh the page to see it again. Combine with `delay` to stagger multiple mount-triggered icons:
+
+```tsx
+<Heart trigger="mount" delay={0} />
+<Star trigger="mount" delay={0.2} />
+<Bell trigger="mount" delay={0.4} />
+```
+
+---
+
+## `in-view`
+
+Animates each time the icon scrolls into the viewport. Built on `IntersectionObserver`. Scroll the demo out of view and back in to see it replay.
+
+<Preview>
+  <Zap size={48} trigger="in-view" />
+</Preview>
+
+```tsx
+<Zap trigger="in-view" />
+```
+
+Useful for landing pages where icons should animate as the user scrolls down.
+
+---
+
+## `parent-hover`
+
+Animate the icon when a **parent element** is hovered, not just the icon itself. This is the trigger you want for icons inside buttons or cards.
+
+How it works: the icon walks up the DOM to find the nearest ancestor with `data-motion-icon-group` and binds to its hover events.
+
+<Preview>
+  <button
+    data-motion-icon-group
+    className="inline-flex items-center gap-2 rounded-md border border-fd-border bg-fd-card px-4 py-2 text-sm transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground"
+  >
+    Continue
+    <Send size={18} trigger="parent-hover" />
+  </button>
+</Preview>
+
+```tsx
+<button
+  data-motion-icon-group
+  className="inline-flex items-center gap-2 rounded-md bg-zinc-900 px-4 py-2 text-white"
+>
+  Continue
+  <Send size={18} trigger="parent-hover" />
+</button>
+```
+
+You can use **any element** as the group root — `<button>`, `<a>`, `<div>`, `<li>`. The constant `PARENT_HOVER_ATTR` is also exported from the package if you'd rather reference it programmatically.
+
+---
+
+## `manual`
+
+You control when the animation fires via an imperative ref. The ref exposes a `MotionIconHandle`:
+
+```ts
+interface MotionIconHandle {
+  play: () => void;
+  reset: () => void;
+  node: SVGSVGElement | null;
+}
+```
+
+<Preview>
+  <ManualTrigger />
+</Preview>
+
+```tsx
+"use client";
+import { useRef } from "react";
+import { Rocket } from "lucide-react-motion";
+import type { MotionIconHandle } from "lucide-react-motion";
+
+export function LaunchButton() {
+  const iconRef = useRef<MotionIconHandle>(null);
+
+  return (
+    <div className="flex items-center gap-4">
+      <Rocket size={48} trigger="manual" ref={iconRef} />
+      <button onClick={() => iconRef.current?.play()}>
+        Launch
+      </button>
+    </div>
+  );
+}
+```
+
+Use this for animations driven by external events — form submission success, route transitions, websocket messages, etc.
+
+---
+
+## Choosing a trigger
+
+| Goal | Trigger |
+| ---- | ------- |
+| Default delightful hover | `hover` |
+| Replay on action / mobile-friendly | `click` |
+| Hero / page-load animation | `mount` |
+| Scroll-driven reveal | `in-view` |
+| Animate icon inside a button | `parent-hover` |
+| External-event-driven | `manual` |

@@ -1,0 +1,39 @@
+---
+title: Lucide//Motion
+description: Animated, editable React components for every Lucide icon.
+---
+
+import { Heart, Settings, Sparkles } from "@/src/generated";
+
+`lucide-react-motion` is a drop-in animated replacement for `lucide-react`. Every one of Lucide's **1,711** icons is exported as a React component that draws itself on hover.
+
+<Preview wide>
+  <Heart size={48} />
+  <Settings size={48} />
+  <Sparkles size={48} />
+</Preview>
+
+Hover any of those. The same imports work in your app:
+
+```tsx
+import { Heart, Settings, Sparkles } from "lucide-react-motion";
+
+<Heart size={48} />
+```
+
+## Why use this
+
+- **Drop-in for `lucide-react`** — change the import path, get animation for free
+- **Full prop parity** — `size`, `color`, `strokeWidth`, `absoluteStrokeWidth`, `className`, refs all work as you'd expect
+- **Six trigger modes** — hover, click, mount, in-view, parent-hover, manual via ref
+- **Accessible by default** — respects `prefers-reduced-motion`
+- **Customizable to the metal** — escape hatch lets you replace the draw with any Motion variants
+- **Tree-shakable** — each icon is its own module
+
+## Where to go next
+
+- **[Getting Started](/docs/getting-started)** — install and render your first icon
+- **[Triggers](/docs/triggers)** — animate on hover, click, scroll, mount, or imperatively
+- **[Animation](/docs/animation)** — slow it down, speed it up, stagger strokes, change easing
+- **[Custom motion](/docs/custom-motion)** — replace the draw entirely with your own variants
+- **[API reference](/docs/api)** — every prop, every type

@@ -1,0 +1,132 @@
+---
+title: API reference
+description: Full prop reference for DrawIcon and MotionIconConfig.
+---
+
+## Icon components
+
+Every Lucide icon is exported as a React component:
+
+```tsx
+import { Heart, HeartIcon } from "lucide-react-motion";
+//        ^^^^^  ^^^^^^^^^
+//        Both names point to the same component.
+```
+
+Each icon accepts the props below. Generated icon files are thin wrappers around `<DrawIcon />` — the type for their props is `Omit<DrawIconProps, "nodes">` since `nodes` is supplied by the wrapper.
+
+---
+
+## `DrawIcon` props
+
+### Lucide-parity props
+
+| Prop                   | Type      | Default          | Notes                                                                |
+| ---------------------- | --------- | ---------------- | -------------------------------------------------------------------- |
+| `size`                 | `number`  | `24`             | Pixel size of the rendered SVG                                       |
+| `color`                | `string`  | `"currentColor"` | Stroke color (inherits parent CSS color by default)                  |
+| `strokeWidth`          | `number`  | `2`              | Line thickness                                                       |
+| `absoluteStrokeWidth`  | `boolean` | `false`          | Keep stroke pixel-constant regardless of `size`                      |
+| `className`, `style`   | —         | —                | Standard React attributes, spread onto the underlying `<svg>`        |
+| `onClick`, `aria-*`, `data-*` | — | —              | All standard SVG attributes are forwarded                            |
+| `ref`                  | `Ref<MotionIconHandle>` | — | Imperative handle (see [`trigger="manual"`](/docs/triggers#manual))   |
+
+### Timing props
+
+See [Animation](/docs/animation) for live demos.
+
+| Prop       | Type                | Default       | Notes                                  |
+| ---------- | ------------------- | ------------- | -------------------------------------- |
+| `duration` | `number`            | `0.55`        | Seconds per stroke                     |
+| `delay`    | `number`            | `0`           | Seconds before draw starts             |
+| `stagger`  | `number`            | `0.12`        | Per-stroke delay increment             |
+| `easing`   | `Easing` or `Easing[]` | `"easeInOut"` | Motion easing curve                  |
+| `repeat`   | `number`            | `0`           | Extra repetitions. `Infinity` = loop   |
+
+### Behavior props
+
+| Prop            | Type              | Default       | Notes                                                                       |
+| --------------- | ----------------- | ------------- | --------------------------------------------------------------------------- |
+| `trigger`       | `Trigger`         | `"hover"`     | When/how the animation fires. See [Triggers](/docs/triggers).               |
+| `onLeave`       | `OnLeave`         | `"complete"`  | What happens when trigger ends. See [Leave behavior](/docs/leave-behavior). |
+| `reducedMotion` | `ReducedMotion`   | `"system"`    | Respect / force / disable reduced-motion. See [Accessibility](/docs/accessibility). |
+
+### Escape hatch
+
+| Prop       | Type                                          | Notes                                                                  |
+| ---------- | --------------------------------------------- | ---------------------------------------------------------------------- |
+| `variants` | `Variants` or `(i: number) => Variants`       | Replace the draw entirely. See [Custom motion](/docs/custom-motion).   |
+
+---
+
+## Type definitions
+
+```ts
+type Trigger =
+  | "hover"
+  | "click"
+  | "mount"
+  | "in-view"
+  | "parent-hover"
+  | "manual";
+
+type OnLeave = "complete" | "snap" | "redraw";
+
+type ReducedMotion = "system" | "always" | "never";
+
+interface MotionIconHandle {
+  play: () => void;
+  reset: () => void;
+  node: SVGSVGElement | null;
+}
+
+type IconNode = [tag: string, attrs: Record<string, string | number>];
+```
+
+All exported from `lucide-react-motion`.
+
+---
+
+## `MotionIconConfig`
+
+React Context provider for app-wide defaults. See [App-wide defaults](/docs/defaults).
+
+```tsx
+interface MotionIconConfigValue {
+  size?: number;
+  color?: string;
+  strokeWidth?: number;
+  absoluteStrokeWidth?: boolean;
+  duration?: number;
+  delay?: number;
+  stagger?: number;
+  easing?: Easing | Easing[];
+  repeat?: number;
+  trigger?: Trigger;
+  onLeave?: OnLeave;
+  reducedMotion?: ReducedMotion;
+}
+
+function MotionIconConfig(
+  props: MotionIconConfigValue & { children: ReactNode }
+): JSX.Element;
+```
+
+---
+
+## Other exports
+
+```ts
+import {
+  DrawIcon,            // The animated SVG primitive every icon wraps.
+  MotionIconConfig,    // Context provider for defaults.
+  PARENT_HOVER_ATTR,   // = "data-motion-icon-group"
+  type DrawIconProps,
+  type IconNode,
+  type MotionIconConfigValue,
+  type MotionIconHandle,
+  type OnLeave,
+  type ReducedMotion,
+  type Trigger,
+} from "lucide-react-motion";
+```
