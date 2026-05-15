@@ -46,12 +46,12 @@ export function IconHero({ Icon, name }: IconHeroProps) {
   );
 
   return (
-    <div className="flex flex-col items-center gap-6 rounded-lg border border-line bg-paper/40 p-10">
+    <div className="flex flex-col items-center gap-6 rounded-lg border border-border bg-background/40 p-10">
       {trigger === "parent-hover" ? (
         <button
           type="button"
           data-motion-icon-group
-          className="rounded-md border border-line p-6 hover:bg-paper-dim/50"
+          className="rounded-md border border-border p-6 hover:bg-secondary/50"
         >
           {iconElement}
         </button>
@@ -66,7 +66,7 @@ export function IconHero({ Icon, name }: IconHeroProps) {
             type="button"
             onClick={() => select(t)}
             data-active={t === trigger}
-            className="border border-line px-3 py-1 text-[11px] uppercase tracking-[0.1em] transition-colors hover:bg-paper-dim/60 data-[active=true]:bg-ink data-[active=true]:text-paper data-[active=true]:border-ink"
+            className="border border-border px-3 py-1 text-[11px] uppercase tracking-[0.1em] transition-colors hover:bg-secondary/60 data-[active=true]:bg-foreground data-[active=true]:text-background data-[active=true]:border-foreground"
           >
             {t}
           </button>
@@ -75,14 +75,14 @@ export function IconHero({ Icon, name }: IconHeroProps) {
           <button
             type="button"
             onClick={() => handleRef.current?.play()}
-            className="border border-accent bg-accent px-3 py-1 text-[11px] uppercase tracking-[0.1em] text-paper hover:bg-ink hover:border-ink"
+            className="border border-primary bg-primary px-3 py-1 text-[11px] uppercase tracking-[0.1em] text-primary-foreground transition-colors hover:bg-foreground hover:border-foreground hover:text-background"
           >
             play()
           </button>
         )}
       </div>
 
-      <p className="max-w-md text-center text-xs text-ink-soft">
+      <p className="max-w-md text-center text-xs text-muted-foreground">
         {triggerHint(trigger, name)}
       </p>
     </div>

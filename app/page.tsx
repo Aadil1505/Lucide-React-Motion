@@ -6,7 +6,6 @@ import manifest from "@/src/generated/manifest.json";
 import * as Icons from "@/src/generated";
 import type { DrawIconProps } from "@/src/engine";
 import { IconCell } from "@/components/icon-cell";
-import { Playground } from "@/components/playground";
 
 type IconComponent = ComponentType<Omit<DrawIconProps, "nodes">>;
 const IconMap = Icons as unknown as Record<string, IconComponent | undefined>;
@@ -25,22 +24,29 @@ export default function Gallery() {
   const visible = filtered.slice(0, limit);
 
   return (
-    <div className="editorial min-h-screen">
+    <div
+      className="min-h-screen bg-background font-mono text-foreground"
+      style={{
+        backgroundImage:
+          "radial-gradient(circle at 1px 1px, color-mix(in oklch, var(--foreground) 8%, transparent) 1px, transparent 0)",
+        backgroundSize: "22px 22px",
+      }}
+    >
       <div className="mx-auto w-full max-w-[1180px] px-6 py-12 sm:px-10">
       {/* Header — eyebrow / wordmark / tagline */}
-      <header className="space-y-5 border-b border-line pb-10">
-        <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.18em] text-ink-soft">
+      <header className="space-y-5 border-b border-border pb-10">
+        <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
           <span>Open Source · ISC</span>
           <span>{manifest.length.toLocaleString()} icons</span>
         </div>
         <h1 className="text-5xl font-semibold tracking-tight sm:text-6xl">
           Lucide
-          <span className="text-accent">{"//"}</span>
+          <span className="text-primary">{"//"}</span>
           Motion
         </h1>
-        <p className="max-w-2xl text-sm leading-relaxed text-ink-soft">
+        <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">
           Every Lucide icon, animated. A drop-in replacement for{" "}
-          <code className="border border-line bg-paper-dim px-1.5 py-0.5 text-[0.85em]">
+          <code className="border border-border bg-secondary px-1.5 py-0.5 text-[0.85em]">
             lucide-react
           </code>{" "}
           with hover-to-draw motion, full prop parity, and a low-level escape
@@ -50,13 +56,19 @@ export default function Gallery() {
         <div className="flex gap-3 pt-1">
           <Link
             href="/docs"
-            className="border border-ink bg-ink px-4 py-2 text-xs uppercase tracking-[0.12em] text-paper transition-colors hover:bg-accent hover:border-accent"
+            className="border border-foreground bg-foreground px-4 py-2 text-xs uppercase tracking-[0.12em] text-background transition-colors hover:bg-primary hover:border-primary hover:text-primary-foreground"
           >
             Read the docs
           </Link>
+          <Link
+            href="/playground"
+            className="border border-foreground px-4 py-2 text-xs uppercase tracking-[0.12em] transition-colors hover:bg-foreground hover:text-background"
+          >
+            Playground
+          </Link>
           <a
             href="https://github.com"
-            className="border border-ink px-4 py-2 text-xs uppercase tracking-[0.12em] transition-colors hover:bg-ink hover:text-paper"
+            className="border border-foreground px-4 py-2 text-xs uppercase tracking-[0.12em] transition-colors hover:bg-foreground hover:text-background"
           >
             GitHub
           </a>
@@ -64,9 +76,9 @@ export default function Gallery() {
       </header>
 
       {/* Sticky control bar — search */}
-      <div className="sticky top-0 z-10 -mx-6 mt-8 border-b border-line bg-paper/90 px-6 py-4 backdrop-blur sm:-mx-10 sm:px-10">
-        <label className="flex items-center gap-2 border border-ink bg-paper px-3 py-2 text-sm focus-within:border-accent">
-          <span className="text-ink-soft">/</span>
+      <div className="sticky top-0 z-10 -mx-6 mt-8 border-b border-border bg-background/90 px-6 py-4 backdrop-blur sm:-mx-10 sm:px-10">
+        <label className="flex items-center gap-2 border border-foreground bg-background px-3 py-2 text-sm focus-within:border-primary">
+          <span className="text-muted-foreground">/</span>
           <input
             value={query}
             onChange={(e) => {
@@ -74,31 +86,23 @@ export default function Gallery() {
               setLimit(PAGE_SIZE);
             }}
             placeholder="search 1,711 icons..."
-            className="w-full bg-transparent outline-none placeholder:text-ink-soft"
+            className="w-full bg-transparent outline-none placeholder:text-muted-foreground"
           />
         </label>
       </div>
 
-      {/* Playground — every feature, hover-able */}
-      <div className="mt-10">
-        <div className="mb-3 text-[10px] uppercase tracking-[0.18em] text-ink-soft">
-          Playground · live feature reference
-        </div>
-        <Playground />
-      </div>
-
       {/* Grid */}
       <div className="mt-12 space-y-4">
-        <div className="text-[10px] uppercase tracking-[0.18em] text-ink-soft">
+        <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
           {query ? `${filtered.length} matches for "${query}"` : "All icons · hover any to draw it on"}
         </div>
 
         {visible.length === 0 ? (
-          <div className="border border-dashed border-line px-6 py-12 text-center text-sm text-ink-soft">
+          <div className="border border-dashed border-border px-6 py-12 text-center text-sm text-muted-foreground">
             no icons match &ldquo;{query}&rdquo;
           </div>
         ) : (
-          <div className="grid grid-cols-4 border-l border-t border-line sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8">
+          <div className="grid grid-cols-4 border-l border-t border-border sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8">
             {visible.map((m) => {
               const Icon = IconMap[m.component];
               if (!Icon) return null;
@@ -112,7 +116,7 @@ export default function Gallery() {
             <button
               type="button"
               onClick={() => setLimit((n) => n + PAGE_SIZE)}
-              className="border border-ink px-5 py-2 text-xs uppercase tracking-[0.12em] transition-colors hover:bg-ink hover:text-paper"
+              className="border border-foreground px-5 py-2 text-xs uppercase tracking-[0.12em] transition-colors hover:bg-foreground hover:text-background"
             >
               Load more ({filtered.length - limit} left)
             </button>
@@ -121,12 +125,12 @@ export default function Gallery() {
       </div>
 
       {/* Footer */}
-      <footer className="mt-20 flex flex-wrap items-center justify-between gap-3 border-t border-line pt-6 text-[10px] uppercase tracking-[0.16em] text-ink-soft">
+      <footer className="mt-20 flex flex-wrap items-center justify-between gap-3 border-t border-border pt-6 text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
         <span>Built on Lucide (ISC) · Animated with Motion</span>
         <span>
           <a
             href="https://lucide.dev"
-            className="underline-offset-4 hover:text-accent hover:underline"
+            className="underline-offset-4 hover:text-primary hover:underline"
           >
             lucide.dev
           </a>

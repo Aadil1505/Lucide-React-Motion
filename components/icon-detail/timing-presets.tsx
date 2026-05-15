@@ -51,13 +51,13 @@ function Preset({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col items-center gap-3 border border-line bg-paper/40 p-4">
+    <div className="flex flex-col items-center gap-3 border border-border bg-background/40 p-4">
       <div className="flex h-20 items-center justify-center">{children}</div>
       <div className="space-y-1 text-center">
-        <div className="text-[10px] uppercase tracking-[0.14em] text-ink">
+        <div className="text-[10px] uppercase tracking-[0.14em] text-foreground">
           {label}
         </div>
-        <code className="text-[9px] text-ink-soft">{code}</code>
+        <code className="text-[9px] text-muted-foreground">{code}</code>
       </div>
     </div>
   );

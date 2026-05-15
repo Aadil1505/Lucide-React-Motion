@@ -3,11 +3,14 @@ import {
   DocsDescription,
   DocsPage,
   DocsTitle,
+  MarkdownCopyButton,
+  ViewOptionsPopover,
 } from "fumadocs-ui/layouts/docs/page";
 import { createRelativeLink } from "fumadocs-ui/mdx";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getMDXComponents } from "@/components/mdx";
+import { docsGithubUrl } from "@/lib/site-config";
 import { source } from "@/lib/source";
 
 export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
@@ -16,11 +19,20 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
   if (!page) notFound();
 
   const MDX = page.data.body;
+  const markdownUrl = `${page.url}.mdx`;
+  const githubUrl = docsGithubUrl(page.path);
 
   return (
     <DocsPage toc={page.data.toc} full={page.data.full}>
       <DocsTitle>{page.data.title}</DocsTitle>
       <DocsDescription>{page.data.description}</DocsDescription>
+      <div className="flex flex-row items-center gap-2 border-b pb-4">
+        <MarkdownCopyButton markdownUrl={markdownUrl}/>
+        <ViewOptionsPopover
+          markdownUrl={markdownUrl}
+          githubUrl={githubUrl}
+        />
+      </div>
       <DocsBody>
         <MDX
           components={getMDXComponents({

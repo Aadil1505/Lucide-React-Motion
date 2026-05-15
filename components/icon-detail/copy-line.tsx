@@ -30,18 +30,18 @@ export function CopyLine({ value, label }: CopyLineProps) {
   return (
     <div className="space-y-1.5">
       {label && (
-        <div className="text-[10px] uppercase tracking-[0.18em] text-ink-soft">
+        <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
           {label}
         </div>
       )}
-      <div className="flex items-stretch gap-0 border border-line bg-paper-dim/50">
+      <div className="flex items-stretch gap-0 border border-border bg-secondary/50">
         <pre className="flex-1 overflow-x-auto px-3 py-2 text-xs">
           <code>{value}</code>
         </pre>
         <button
           type="button"
           onClick={copy}
-          className="border-l border-line bg-paper px-3 text-[10px] uppercase tracking-[0.1em] text-ink-soft transition-colors hover:bg-ink hover:text-paper"
+          className="border-l border-border bg-background px-3 text-[10px] uppercase tracking-[0.1em] text-muted-foreground transition-colors hover:bg-foreground hover:text-background"
         >
           {copied ? "copied" : "copy"}
         </button>

@@ -21,8 +21,8 @@ function Section({
   children: ReactNode;
 }) {
   return (
-    <section className="border-b border-line last:border-b-0">
-      <h3 className="border-b border-line bg-paper-dim px-5 py-2 text-[10px] uppercase tracking-[0.18em] text-ink-soft">
+    <section className="border-b border-border last:border-b-0">
+      <h3 className="border-b border-border bg-secondary px-5 py-2 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
         {title}
       </h3>
       <div className="flex flex-wrap items-end gap-x-10 gap-y-8 px-5 py-6">
@@ -36,7 +36,7 @@ function Demo({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div className="flex min-w-[88px] flex-col items-center gap-2">
       {children}
-      <code className="text-[10px] tracking-tight text-ink-soft">{label}</code>
+      <code className="text-[10px] tracking-tight text-muted-foreground">{label}</code>
     </div>
   );
 }
@@ -53,11 +53,11 @@ function ButtonDemo({
       <button
         type="button"
         data-motion-icon-group
-        className="inline-flex items-center gap-2 border border-ink px-3 py-1.5 text-xs uppercase tracking-[0.12em] transition-colors hover:bg-ink hover:text-paper"
+        className="inline-flex items-center gap-2 border border-foreground px-3 py-1.5 text-xs uppercase tracking-[0.12em] transition-colors hover:bg-foreground hover:text-background"
       >
         {children}
       </button>
-      <code className="text-[10px] tracking-tight text-ink-soft">{label}</code>
+      <code className="text-[10px] tracking-tight text-muted-foreground">{label}</code>
     </div>
   );
 }
@@ -66,7 +66,7 @@ export function Playground() {
   const manualRef = useRef<MotionIconHandle>(null);
 
   return (
-    <div className="border border-line bg-paper">
+    <div className="border border-border bg-background">
       <Section title="Timing — hover each">
         <Demo label="defaults"><Heart size={36} /></Demo>
         <Demo label="duration=0.15"><Heart size={36} duration={0.15} /></Demo>
@@ -102,11 +102,11 @@ export function Playground() {
           <button
             type="button"
             onClick={() => manualRef.current?.play()}
-            className="border border-ink px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] transition-colors hover:bg-ink hover:text-paper"
+            className="border border-foreground px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] transition-colors hover:bg-foreground hover:text-background"
           >
             play()
           </button>
-          <code className="text-[10px] text-ink-soft">
+          <code className="text-[10px] text-muted-foreground">
             trigger=&quot;manual&quot;
           </code>
         </div>
