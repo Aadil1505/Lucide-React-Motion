@@ -1,6 +1,6 @@
 {
   "name": "lucide-react-motion",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Lucide icons as animated React components, powered by Motion.",
   "license": "MIT",
   "type": "module",
