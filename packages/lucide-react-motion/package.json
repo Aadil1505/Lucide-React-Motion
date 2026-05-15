@@ -30,7 +30,7 @@
     "prebuild": "pnpm generate",
     "build": "tsup",
     "predev": "pnpm generate",
-    "dev": "tsup --watch",
+    "dev": "tsup --watch --no-dts --no-clean",
     "clean": "rm -rf dist src/generated",
     "typecheck": "tsc --noEmit",
     "lint": "echo \"(no lint configured)\""
