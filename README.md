@@ -1,36 +1,71 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# lucide-react-motion
 
-## Getting Started
+Lucide icons as animated React components, powered by [Motion](https://motion.dev). Every one of Lucide's 1,700+ icons exported as a React component that draws itself on hover, mount, scroll, or imperative call.
 
-First, run the development server:
+```tsx
+import { Heart } from "lucide-react-motion";
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+<Heart trigger="hover" size={32} />
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+→ Docs, gallery, and playground: **[lucide-react-motion.dev](https://lucide-react-motion.dev)**
+→ npm: **[lucide-react-motion](https://www.npmjs.com/package/lucide-react-motion)**
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Repo layout
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+This is a pnpm + Turborepo monorepo.
 
-## Learn More
+```
+packages/
+  lucide-react-motion/   the published library (tsup, dual ESM/CJS, RSC-safe)
+apps/
+  site/                  the docs + gallery + playground (Next.js + Fumadocs)
+```
 
-To learn more about Next.js, take a look at the following resources:
+The site imports the library by package name via `workspace:*`, so every example shown in the docs is the same code an npm consumer would write.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Develop
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Requires **Node 20+** and **pnpm 10**.
 
-## Deploy on Vercel
+```bash
+pnpm install
+pnpm dev          # runs lib (tsup --watch) + site (next dev) in parallel
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Other useful scripts:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+pnpm build                              # build everything
+pnpm typecheck                          # tsc across all packages
+pnpm lint                               # eslint across all packages
+pnpm --filter lucide-react-motion build # build only the library
+pnpm --filter site dev                  # run only the site
+```
+
+### Adding or updating icons
+
+The 1,700+ per-icon component files in `packages/lucide-react-motion/src/generated/` are codegen output, not checked into git. Bump `lucide-static` and rerun the generator:
+
+```bash
+pnpm --filter lucide-react-motion generate
+```
+
+This happens automatically before `build` and `dev`.
+
+## Release
+
+Versioning and publishing go through [Changesets](https://github.com/changesets/changesets):
+
+```bash
+pnpm changeset           # describe your change, pick a bump
+git commit -am "..."
+```
+
+On merge to `main`, the **Release** GitHub Action opens a "Version Packages" PR. Merging that PR publishes `lucide-react-motion` to npm with [provenance](https://docs.npmjs.com/generating-provenance-statements). The `site` app is private and never published.
+
+A repo secret `NPM_TOKEN` must be configured for the release workflow.
+
+## License
+
+MIT
