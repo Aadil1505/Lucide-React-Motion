@@ -52,4 +52,10 @@ jobs:
         run: pnpm dlx publint packages/lucide-react-motion
 
       - name: Validate types (are-the-types-wrong)
-        run: pnpm dlx @arethetypeswrong/cli --pack packages/lucide-react-motion
+        # Ignore no-resolution: subpath exports (./manifest) can't be
+        # resolved by Node 10, which doesn't read package.json "exports".
+        # We declare engines.node ">=18", so Node 10 is unsupported by
+        # design. Every modern library with subpath exports has this.
+        run: |
+          pnpm dlx @arethetypeswrong/cli --pack packages/lucide-react-motion \
+            --ignore-rules no-resolution

@@ -1,1 +1,1 @@
-export { default, type ManifestEntry } from "./generated/manifest";
+export { manifest, type ManifestEntry } from "./generated/manifest";

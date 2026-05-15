@@ -1,4 +1,4 @@
-import manifest from "lucide-react-motion/manifest";
+import { manifest } from "lucide-react-motion/manifest";
 
 export const ICON_COUNT = manifest.length;
 

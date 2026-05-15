@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState, type ComponentType } from "react";
-import manifest from "lucide-react-motion/manifest";
+import { manifest } from "lucide-react-motion/manifest";
 import * as Icons from "lucide-react-motion";
 import type { DrawIconProps } from "lucide-react-motion";
 import { IconCell } from "@/components/icon-cell";

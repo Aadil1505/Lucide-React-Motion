@@ -4,7 +4,7 @@
  * `generateMetadata` / server components.
  */
 
-import manifest from "lucide-react-motion/manifest";
+import { manifest } from "lucide-react-motion/manifest";
 import tagsByName from "lucide-static/tags.json";
 
 export interface IconEntry {
