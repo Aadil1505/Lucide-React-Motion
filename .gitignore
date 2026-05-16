@@ -51,4 +51,7 @@ packages/lucide-react-motion/src/generated/
 
 # fumadocs-mdx build output
 .source/
-.pnpm-store/**
+
+# pnpm content-addressable store - only appears in-tree when a contributor
+# sets store-dir to a relative path (default is global, ~/.pnpm-store)
+.pnpm-store/

@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import {
   Sheet,
@@ -60,11 +60,15 @@ function isActive(pathname: string, href: string): boolean {
 export function SiteNav() {
   const pathname = usePathname() ?? "/";
   const [open, setOpen] = useState(false);
+  const [lastPathname, setLastPathname] = useState(pathname);
 
-  // Auto-close the sheet on route change.
-  useEffect(() => {
+  // Close the mobile sheet on route change. Done during render (not in an
+  // effect) so React batches it into the same commit — avoids the extra
+  // render the effect-based version would cause on every navigation.
+  if (lastPathname !== pathname) {
+    setLastPathname(pathname);
     setOpen(false);
-  }, [pathname]);
+  }
 
   // Docs has its own Fumadocs nav with full feature set (search, sidebar toggle,
   // theme switch). Hiding our nav there avoids a stacked double bar.
