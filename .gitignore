@@ -51,3 +51,4 @@ packages/lucide-react-motion/src/generated/
 
 # fumadocs-mdx build output
 .source/
+.pnpm-store/**
