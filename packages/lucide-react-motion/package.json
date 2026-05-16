@@ -43,7 +43,7 @@
     "prebuild": "pnpm generate",
     "build": "BUILD=main tsup && BUILD=manifest tsup",
     "predev": "pnpm generate",
-    "dev": "BUILD=main tsup --watch --no-dts --no-clean",
+    "dev": "BUILD=manifest tsup --no-dts --no-clean && BUILD=main tsup --watch --no-dts --no-clean",
     "clean": "rm -rf dist src/generated",
     "typecheck": "tsc --noEmit",
     "lint": "echo \"(no lint configured)\""
