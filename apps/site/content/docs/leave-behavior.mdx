@@ -31,6 +31,8 @@ The in-progress draw finishes naturally. The most natural-feeling default for st
 
 Hover, then quickly move the cursor away — notice the stroke completes drawing even after you leave.
 
+If the icon sits inside a parent with a hover color transition, the parent's color will release the moment the cursor leaves while the stroke is still drawing. To keep the host color pinned for the full draw, use the [`data-motion-state` attribute](/docs/motion-state) the icon broadcasts on its `<svg>`.
+
 ---
 
 ## `snap`

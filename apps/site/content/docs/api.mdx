@@ -57,6 +57,14 @@ See [Animation](/docs/animation) for live demos.
 | ---------- | --------------------------------------------- | ---------------------------------------------------------------------- |
 | `variants` | `Variants` or `(i: number) => Variants`       | Replace the draw entirely. See [Custom motion](/docs/custom-motion).   |
 
+### DOM attributes the engine writes
+
+The rendered `<svg>` also carries an attribute that the engine owns. It is read-only from a consumer's perspective — passing it as a prop has no effect.
+
+| Attribute           | Values                                  | Notes                                                              |
+| ------------------- | --------------------------------------- | ------------------------------------------------------------------ |
+| `data-motion-state` | `"resting"` \| `"drawing"` \| `"complete"` | Current draw lifecycle phase. See [Motion state](/docs/motion-state). |
+
 ---
 
 ## Type definitions
@@ -73,6 +81,8 @@ type Trigger =
 type OnLeave = "complete" | "snap" | "redraw";
 
 type ReducedMotion = "system" | "always" | "never";
+
+type MotionState = "resting" | "drawing" | "complete";
 
 interface MotionIconHandle {
   play: () => void;
@@ -125,6 +135,7 @@ import {
   type IconNode,
   type MotionIconConfigValue,
   type MotionIconHandle,
+  type MotionState,
   type OnLeave,
   type ReducedMotion,
   type Trigger,
