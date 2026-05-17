@@ -433,17 +433,20 @@ export function DrawIcon(props: DrawIconProps) {
     else if (def === "rest") setMotionState("resting");
   };
   const handleAnimationComplete = (def: unknown) => {
-    if (def === "active") {
+    // Only `active` completion is meaningful here. Listening to `rest`
+    // completion is unsafe: paths like `click` and `onLeave="snap"` fire a
+    // synchronous `rest` followed by an `active`, and motion can deliver
+    // the rest-complete event AFTER active-start has already set state to
+    // "drawing" — clobbering it back to "resting" mid-draw. The rest-start
+    // handler above already lands the state correctly for every reset path.
+    if (def !== "active") return;
+    if (isHoverTrigger && !hoveringRef.current) {
       // Hover-style triggers only keep the latched `complete` state while
       // the cursor remains over the target. Otherwise revert to resting so
       // host CSS detaches cleanly.
-      if (isHoverTrigger && !hoveringRef.current) {
-        setMotionState("resting");
-      } else {
-        setMotionState("complete");
-      }
-    } else if (def === "rest") {
       setMotionState("resting");
+    } else {
+      setMotionState("complete");
     }
   };
 

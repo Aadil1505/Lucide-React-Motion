@@ -4,6 +4,7 @@ description: Sync host CSS with the icon's draw lifecycle via the data-motion-st
 ---
 
 import { Heart, Send } from "lucide-react-motion";
+import { MotionStateInspector } from "@/components/docs/motion-state-inspector";
 
 Every rendered icon carries a `data-motion-state` attribute on its `<svg>`. It reflects the current phase of the draw animation and lets you style the **surrounding UI** in lockstep with what the stroke is doing.
 
@@ -59,6 +60,16 @@ With `data-motion-state` you can keep the host color pinned for as long as the i
 ```
 
 Hover, then quickly move away — the stroke color now holds through the full draw instead of snapping back.
+
+---
+
+## Try it
+
+Interact with the icon and watch the state change in real time. The log shows each transition with the time since the previous one — useful for seeing how `complete` lingers under `hover`, latches under `click`, and only fires after the full draw under any trigger.
+
+The demo runs at a slowed-down `duration={2}` and `stagger={0.35}` so the `drawing → complete` window is easy to catch. Real-world defaults are `0.55s` and `0.12s`.
+
+<MotionStateInspector />
 
 ---
 
