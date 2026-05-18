@@ -1,8 +1,13 @@
 import { matchPathDOneOf, type Motion } from "../compose";
 
 /**
- * Lub-dub heart beat — scale keyframes with weighted `times` so the second
- * pump lands faster than the first, matching the rhythm of a real heartbeat.
+ * Lub-dub heart beat — anatomically correct contract-and-relax rhythm.
+ * Rest size is the relaxed (largest) state; each beat is a contraction
+ * back toward the icon center. That's what a real heart does during
+ * systole, and it keeps the motion entirely within the 24×24 viewBox so
+ * the stroke never gets clipped at the edges. Weighted `times` make S2
+ * land in quick succession after S1 with a slow settle on the tail,
+ * matching the rhythm of a real heartbeat.
  *
  * Lucide reshapes the heart across variants to leave room for whatever
  * modifier the variant carries (plus, minus, x, slash, crack, etc.). Every
@@ -19,6 +24,22 @@ import { matchPathDOneOf, type Motion } from "../compose";
  * fuses the heart with the clasping hands and gets its own gentler motion
  * (`heartHandshakeClasp`) so the hands don't inflate.
  */
+/**
+ * Scale + time keyframes for the heart's lub-dub. Exported so other
+ * heart-family motions whose paths are visually *inside* the heart body
+ * (the crack zigzag in `heart-crack`, the EKG trace in `heart-pulse`)
+ * can apply the same scaling and breathe in sync with the host heart
+ * instead of floating statically over a contracting shape.
+ *
+ * Pattern: an internal motion imports these constants and feeds them
+ * into motion's per-value `transition` so its other animated properties
+ * (e.g. `pathLength` reveal) can keep their own independent timing.
+ */
+export const HEART_BEAT_KEYFRAMES = {
+  scale: [1, 0.85, 1, 0.9, 0.95, 1],
+  times: [0, 0.15, 0.3, 0.45, 0.6, 1],
+};
+
 const HEART_PATHS = [
   // heart, heart-pulse (identical base d)
   "M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5",
@@ -41,13 +62,13 @@ export const heartBeat: Motion = {
   factory: (ctx) => ({
     rest: { scale: 1 },
     active: {
-      scale: [1, 1.2, 0.92, 1.15, 0.96, 1],
+      scale: HEART_BEAT_KEYFRAMES.scale,
       transition: {
         duration: ctx.duration,
         delay: ctx.delay + ctx.index * ctx.stagger,
         ease: ctx.easing,
         repeat: ctx.repeat,
-        times: [0, 0.15, 0.3, 0.45, 0.6, 1],
+        times: HEART_BEAT_KEYFRAMES.times,
       },
     },
   }),

@@ -419,6 +419,66 @@ propagate outward, the way real sound waves do.
 **Result**: six variants, ~80 lines of new code, zero re-typed bell
 physics. The shared motion modules are the single source of truth.
 
+### Coupling every non-shell path to the host's motion
+
+When a host shape moves (scale, rotate, translate), anything else in
+the icon that doesn't follow visually "floats" over a moving shape
+and reads as disconnected. The fix isn't to limit it to Tier 2
+internals — *every* non-shell path in the icon, including Tier 1
+markers like +, −, ×, and the off-slash, should track the host so the
+icon reads as one cohesive unit through the animation.
+
+Convention: each host motion exports its keyframe constants, and any
+family-specific reveal motion imports them and applies them via
+motion's per-value `transition` so its own animated properties
+(reveal, draw, opacity) can keep their independent timing.
+
+```ts
+// motions/heart-beat.ts
+export const HEART_BEAT_KEYFRAMES = {
+  scale: [1, 0.85, 1, 0.9, 0.95, 1],
+  times: [0, 0.15, 0.3, 0.45, 0.6, 1],
+};
+
+// motions/heart-modifier-reveal.ts
+import { HEART_BEAT_KEYFRAMES } from "./heart-beat";
+
+export const heartModifierReveal: Motion = {
+  matches: matchAnyPath,
+  factory: (ctx) => ({
+    rest: { pathLength: 1, opacity: 1, scale: 1 },
+    active: {
+      pathLength: [0, 0, 1],
+      opacity: [0, 0, 1],
+      scale: HEART_BEAT_KEYFRAMES.scale,
+      transition: {
+        duration: ctx.duration,
+        delay: ctx.delay + ctx.index * ctx.stagger,
+        repeat: ctx.repeat,
+        // `inherit: true` is required — per-value transitions replace
+        // the parent entirely unless this flag is set, which would drop
+        // duration/delay/repeat and fall back to motion-dom's defaults.
+        pathLength: { inherit: true, ease: "easeOut", times: [0, 0.2, 0.55] },
+        opacity:    { inherit: true, ease: "easeOut", times: [0, 0.2, 0.55] },
+        // Scale piggybacks on the host's keyframes — every non-shell
+        // path beats together with the heart.
+        scale:      { inherit: true, ease: ctx.easing, times: HEART_BEAT_KEYFRAMES.times },
+      },
+    },
+  }),
+};
+```
+
+The host motion stays the single source of truth for "what the beat
+looks like." Family-specific reveals only have to think about *their*
+draw behavior. Reapply this pattern for every family with a primary
+transform: build a `<family>ModifierReveal` (wildcard) that piggybacks
+the host's keyframes, and the variants compose to
+`[host, <family>ModifierReveal]`. Generic `modifierReveal` (no host
+coupling) stays available for families whose host motion is itself a
+pure draw — but for any family whose host transforms, prefer the
+family-specific reveal.
+
 ## 6. Reusable motions currently available
 
 When authoring a new signature, check this list first. If an existing
@@ -433,7 +493,8 @@ motion matches the path you're animating, just import and reuse.
 | `motions/dot-reveal.ts` | Circle at cx=18,cy=5,r=3 | Scale + opacity for notification dots (Tier 1) |
 | `motions/heart-beat.ts` | All known heart shell d variants (heart, heart-crack, heart-minus, heart-plus, heart-x, heart-pulse base, heart-off fragments) | Lub-dub scale beat (Tier 2) |
 | `motions/heart-handshake-clasp.ts` | Heart-handshake's single merged d | Gentle whole-icon "shared warmth" pulse (Tier 2; merged path forces a whole-icon gesture) |
-| `motions/heart-pulse-line.ts` | Heart-pulse's EKG waveform d | Linear `pathLength` sweep that draws the trace left-to-right (Tier 2) |
+| `motions/heart-pulse-line.ts` | Heart-pulse's EKG waveform d | Linear `pathLength` sweep that draws the trace left-to-right; scale follows the host `heartBeat` so the line breathes with the heart (Tier 2) |
+| `motions/heart-modifier-reveal.ts` | `matchAnyPath` (wildcard) | Delayed `pathLength` + `opacity` reveal that also scales with the host `heartBeat`. Used for every non-shell heart-family path — crack, ±, ×, off-slash — so they stay anchored through the beat |
 | `motions/eye-blink.ts` | `matchAnyPath` for eye | scaleY collapse + return |
 | `motions/star-twinkle.ts` | Star base d | Combined rotate + scale + opacity |
 | `motions/sun-rotate.ts` | `matchAnyPath` for sun | Slow rotation (via `atom/spin`) |

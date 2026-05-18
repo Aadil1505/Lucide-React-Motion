@@ -1,14 +1,14 @@
 import { compose } from "../compose";
 import { heartBeat } from "../motions/heart-beat";
-import { modifierReveal } from "../motions/modifier-reveal";
+import { heartModifierReveal } from "../motions/heart-modifier-reveal";
 
 /**
- * Heart beats (shared `heartBeat` — the heart-crack base shape is one of
- * the registered shell variants), and the zigzag crack reveals itself
- * mid-beat via `modifierReveal`. The crack drawing on top of a still-
- * beating heart reads as "this heart is broken but it carries on."
+ * Heart beats (shared `heartBeat`), and the zigzag crack reveals itself
+ * mid-beat while breathing with the host via `heartModifierReveal` —
+ * the crack is part of the heart's surface so it scales along rather
+ * than floating statically over a contracting shape.
  */
 export default compose({
-  motions: [heartBeat, modifierReveal],
+  motions: [heartBeat, heartModifierReveal],
   defaults: { duration: 0.8, easing: "easeInOut", stagger: 0 },
 });
