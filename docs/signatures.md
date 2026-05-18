@@ -240,6 +240,11 @@ statically over the moving host (see section 5).
 | `heart-plus` / `-minus` / `-x` / `-off`'s modifiers + `heart-crack`'s crack | 1 | `heartModifierReveal` — reveal + beats with heart |
 | `heart-pulse`'s EKG trace | **2** | `heartPulseLine` — linear paper-tape draw; also beats with heart |
 | `heart-handshake`'s merged heart+hands | **2** | `heartHandshakeClasp` — single soft pulse on a merged path |
+| `sun-dim` / `sun-medium`'s body + rays | **2** | `sunRayPulse` — scale-outward + opacity dim, staggered so the rays cascade outward from the sun's centre |
+| `sun-moon`'s moon crescent | **2** | `moonGlow` — opacity-only (reflects light, doesn't radiate) |
+| `sun-moon`'s sun rays + quarter-arc | **2** | `sunRayPulse` — radiates with the same cascade as `sun-dim`/`sun-medium` |
+| `sun-snow`'s snowflake arms | **2** | `snowflakeTwinkle` — opacity double-pulse sparkle, negligible scale wobble for cohesion |
+| `sun-snow`'s sun half-arc + rays | **2** | `sunRayPulse` — signature pivots at (10, 12), the sun's actual centre, so rays radiate cleanly from it |
 
 When in doubt, ask: "does this path depict an actual physical thing
 that has its own motion in the real world, or is it a marker?" If the
@@ -588,7 +593,10 @@ motion matches the path you're animating, just import and reuse.
 | `motions/heart-modifier-reveal.ts` | `matchAnyPath` (wildcard) | Delayed `pathLength` + `opacity` reveal that also scales with the host `heartBeat`. Used for every non-shell heart-family path — crack, ±, ×, off-slash — so they stay anchored through the beat |
 | `motions/eye-blink.ts` | `matchAnyPath` for eye | scaleY collapse + return |
 | `motions/star-twinkle.ts` | Star base d | Combined rotate + scale + opacity |
-| `motions/sun-rotate.ts` | `matchAnyPath` for sun | Slow rotation (via `atom/spin`) |
+| `motions/sun-rotate.ts` | `matchAnyPath` for sun | Slow rotation (via `atom/spin`); used by the regular `sun` signature |
+| `motions/sun-ray-pulse.ts` | `matchAnyPath` (wildcard) | Per-path scale-outward + opacity dim with stagger. Used as the catch-all in every sun *variant* signature (`sun-dim`, `sun-medium`, sun parts of `sun-moon` and `sun-snow`) so the rays cascade outward from the sun's centre — light radiating from the surface (Tier 2) |
+| `motions/moon-glow.ts` | Sun-moon's moon crescent d | Opacity-only soft dim/glow with no scale (moon reflects light, doesn't radiate; off-centre crescent shouldn't translate when the signature pivots for the sun) (Tier 2) |
+| `motions/snowflake-twinkle.ts` | Sun-snow's 5 snowflake d's | Sharp opacity double-pulse + barely-perceptible scale wobble — ice crystals sparkle by reflection, not by changing size (Tier 2) |
 | `motions/loader-spin.ts` | `matchAnyPath` for loader | Infinite rotation (via `atom/spin`) |
 | `motions/atom/spin.ts` | (factory only, no matches) | Pure rotation math; reused by spin Mode + sun/loader |
 
