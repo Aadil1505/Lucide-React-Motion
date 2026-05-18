@@ -431,7 +431,9 @@ motion matches the path you're animating, just import and reuse.
 | `motions/bell-sound-waves.ts` | Bell-ring wave d's | Radiating pulses out from origin (Tier 2) |
 | `motions/modifier-reveal.ts` | `matchAnyPath` (wildcard) | Generic pathLength + opacity draw-in (Tier 1) |
 | `motions/dot-reveal.ts` | Circle at cx=18,cy=5,r=3 | Scale + opacity for notification dots (Tier 1) |
-| `motions/heart-beat.ts` | Heart base d | Lub-dub scale beat (Tier 2) |
+| `motions/heart-beat.ts` | All known heart shell d variants (heart, heart-crack, heart-minus, heart-plus, heart-x, heart-pulse base, heart-off fragments) | Lub-dub scale beat (Tier 2) |
+| `motions/heart-handshake-clasp.ts` | Heart-handshake's single merged d | Gentle whole-icon "shared warmth" pulse (Tier 2; merged path forces a whole-icon gesture) |
+| `motions/heart-pulse-line.ts` | Heart-pulse's EKG waveform d | Linear `pathLength` sweep that draws the trace left-to-right (Tier 2) |
 | `motions/eye-blink.ts` | `matchAnyPath` for eye | scaleY collapse + return |
 | `motions/star-twinkle.ts` | Star base d | Combined rotate + scale + opacity |
 | `motions/sun-rotate.ts` | `matchAnyPath` for sun | Slow rotation (via `atom/spin`) |
