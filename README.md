@@ -84,7 +84,7 @@ packages/
     src/
       engine.tsx           Core <DrawIcon /> + provider + trigger plumbing
       generated/           1,700+ icon components (codegen output, gitignored)
-      manifest.ts          Generated icon catalog: { name, component, tags }
+      manifest.ts          Generated icon catalog: { name, component, tags: readonly string[] }
     scripts/generate.ts    Codegen from lucide-static
     tsup.config.ts         Two-pass build: main bundle + /manifest subpath
 apps/

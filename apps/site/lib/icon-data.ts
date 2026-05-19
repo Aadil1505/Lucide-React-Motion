@@ -4,8 +4,7 @@
  * `generateMetadata` / server components.
  */
 
-import { manifest } from "lucide-react-motion/manifest";
-import tagsByName from "lucide-static/tags.json";
+import { manifest, type ManifestEntry } from "lucide-react-motion/manifest";
 
 export interface IconEntry {
   name: string;
@@ -13,12 +12,11 @@ export interface IconEntry {
 }
 
 interface IconDetail extends IconEntry {
-  tags: string[];
+  tags: readonly string[];
   related: IconEntry[];
 }
 
-const byName = new Map<string, IconEntry>(manifest.map((m) => [m.name, m]));
-const tags: Record<string, string[] | undefined> = tagsByName;
+const byName = new Map<string, ManifestEntry>(manifest.map((m) => [m.name, m]));
 
 /** All icon slugs. Used by `generateStaticParams`. */
 export function getAllSlugs(): string[] {
@@ -29,11 +27,11 @@ export function getAllSlugs(): string[] {
 export function getIcon(slug: string): IconDetail | null {
   const entry = byName.get(slug);
   if (!entry) return null;
-  const iconTags = tags[slug] ?? [];
   return {
-    ...entry,
-    tags: iconTags,
-    related: getRelated(slug, iconTags, 10),
+    name: entry.name,
+    component: entry.component,
+    tags: entry.tags,
+    related: getRelated(slug, entry.tags, 10),
   };
 }
 
@@ -41,18 +39,17 @@ export function getIcon(slug: string): IconDetail | null {
  * Other icons that share the most tags with `slug`, sorted by overlap count.
  * Excludes the icon itself.
  */
-function getRelated(slug: string, ownTags: string[], limit: number): IconEntry[] {
+function getRelated(slug: string, ownTags: readonly string[], limit: number): IconEntry[] {
   if (ownTags.length === 0) return [];
   const own = new Set(ownTags);
   const scored: Array<{ entry: IconEntry; overlap: number }> = [];
 
   for (const m of manifest) {
     if (m.name === slug) continue;
-    const candidateTags = tags[m.name];
-    if (!candidateTags || candidateTags.length === 0) continue;
+    if (m.tags.length === 0) continue;
     let overlap = 0;
-    for (const t of candidateTags) if (own.has(t)) overlap++;
-    if (overlap > 0) scored.push({ entry: m, overlap });
+    for (const t of m.tags) if (own.has(t)) overlap++;
+    if (overlap > 0) scored.push({ entry: { name: m.name, component: m.component }, overlap });
   }
 
   scored.sort((a, b) => b.overlap - a.overlap);
