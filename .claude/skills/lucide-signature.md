@@ -34,8 +34,26 @@ Before anything else, read `docs/signatures.md` end-to-end. It's the source of t
 
 `docs/signatures.md` section 3 is the canonical definition; the quick mental model:
 
-- **Tier 1 — UI / state markers** (`+`, `−`, `×`, `✓`, slash, off-mark, notification dot). The decorative overlay that disambiguates a variant. Authored as a family-wide modifier-reveal (`bellModifierReveal`, `heartModifierReveal`, `eyeModifierReveal`): `pathLength` + `opacity` draw-in (or `scale` + `opacity` for `<circle>` markers like `bellDotReveal`), plus a kinetic companion sharing the host's `times` — see principle 2.
-- **Tier 2 — Real-life-grounded elements** (sound waves, flames, water drops, smoke, sparkles, EKG traces, cracks). Things that exist as physical parts of the depicted object. Bespoke physics designed from "how does this real-world thing actually behave," plus host-keyframe inheritance for cohesion.
+- **Tier 1 — UI / state markers.** Abstract semantic decorations that *signify a state* — they don't represent anything physical. Lucide uses a fixed vocabulary of these across the catalog; when you see a path or `<circle>` matching any of these patterns, it is Tier 1 by default:
+
+  | Suffix | Marker shape | Examples |
+  |---|---|---|
+  | `*-off` | diagonal strikethrough slash (`m2 2 20 20` or mirror) | `eye-off`, `cloud-off`, `bell-off`, `heart-off`, `droplet-off`, `umbrella-off`, `volume-off`, `wifi-off`, `mic-off` |
+  | `*-plus` / `*-minus` | small `+` / `−` stroke pair | `bell-plus`, `heart-plus`, `clock-plus`, `cloud-plus` |
+  | `*-check` / `*-x` | `✓` / `×` stroke marker | `bell-check`, `heart-x`, `clock-check`, `cloud-check` |
+  | `*-dot` | small filled `<circle>` (notification dot) | `bell-dot` |
+  | `*-alert` / `*-warning` | `!` exclamation or alert triangle | `cloud-alert`, `clock-alert` |
+  | `*-info` | `i` stroke marker | `file-info`, `circle-info` |
+  | `*-question` | `?` stroke marker | `file-question`, `message-question` |
+  | `*-arrow-{up,down,left,right}` | small directional arrow at corner-badge size | `clock-arrow-up`, `clock-arrow-down` |
+
+  **Every Tier 1 marker is authored through the family-wide modifier-reveal** (`bellModifierReveal`, `heartModifierReveal`, `cloudModifierReveal`, `eyeModifierReveal`): `pathLength` + `opacity` draw-in for path markers, or `scale` + `opacity` for `<circle>` markers (see `bellDotReveal`). Placed LAST in the compose list. Kinetic companion sharing the host's `times` per principle 2.
+
+  **Default to the family modifier-reveal whenever you see one of these suffixes.** Don't write a one-off `matchPathD("<exact d>")` motion for a state marker — that's how the eye-off pass initially went wrong. If the family doesn't have its modifier-reveal yet, build it (matchAnyPath wildcard) — once. Every future variant in that family will route through it for free.
+
+- **Tier 2 — Real-life-grounded elements.** Things that exist as physical parts of the depicted object — sound waves, flames, water drops, smoke, sparkles, EKG traces, cracks, gears, locks, the second hand of a clock. Bespoke physics designed from "how does this real-world thing actually behave," plus host-keyframe inheritance for cohesion.
+
+  **Composite badges that look like state markers but belong in Tier 2** because they have their own physical/semantic motion: `*-cog` (gear rotates), `*-pen` / `*-edit` (writes), `*-lock` / `*-unlock` (clicks open/closed), `*-clock` (ticks), `*-search` (magnifier swings), `*-sync` (paired arrows rotate), `*-share` (graph). When in doubt: does the marker have a single canonical real-world motion? If yes, Tier 2.
 
 Tier only determines what *additional* motion the path gets. Both tiers share kinetic life with the host (principle 2).
 
@@ -152,7 +170,7 @@ For every pending icon in the family, follow section 4 of the doc:
 2. **Decide tier per path** (Step 1's "two tiers" definition, or section 3 of the doc). Tier only decides what *additional* motion the path gets — both tiers share kinetic life with the host (see principle 2 for the inherit-vs-synthesize rule).
 3. **Reuse existing motions** by path-data match. If a variant reshapes the host's `d` slightly, extend the host motion's `matchPathDOneOf` list rather than writing a new motion.
 4. **Make sure the host motion exports its keyframe constants** (`HEART_BEAT_KEYFRAMES`, `BELL_SHELL_KEYFRAMES` are the precedent). Other family motions inherit them.
-5. **Tier 1 markers — use the family's coupled modifier reveal** (`heartModifierReveal`, `bellModifierReveal`, `eyeModifierReveal`) as the template. If the family doesn't have one yet, build a `matchAnyPath` motion that combines `pathLength` + `opacity` reveal (or `scale` + `opacity` for `<circle>` markers — see `bellDotReveal`) and place it LAST in the compose list. The kinetic companion follows principle 2's host-transform-shape rule:
+5. **Tier 1 markers — recognize the suffix, then route through the family's modifier-reveal.** If the variant's name ends in `-off`, `-plus`, `-minus`, `-check`, `-x`, `-dot`, `-alert`, `-warning`, `-info`, `-question`, or `-arrow-{up,down,left,right}`, the modifier path is Tier 1 (see Step 1's "two tiers" table). Don't write a one-off specific matcher for it. Use the family-wide modifier-reveal (`heartModifierReveal`, `bellModifierReveal`, `eyeModifierReveal`) — or build one if the family doesn't have it yet: a `matchAnyPath` motion combining `pathLength` + `opacity` reveal (or `scale` + `opacity` for `<circle>` markers — see `bellDotReveal`), placed LAST in the compose list. The kinetic companion follows principle 2's host-transform-shape rule:
    - **In-plane host** → directly inherit the host's primary transform. Examples: `bellModifierReveal` inherits `BELL_SHELL_KEYFRAMES.rotate`; `heartModifierReveal` inherits `HEART_BEAT_KEYFRAMES.scale`; `cloudModifierReveal` inherits `CLOUD_BODY_KEYFRAMES.scale`.
    - **Axis-asymmetric host** → synthesize an in-plane companion (uniform `scale` dip like `[1, 0.85, 1]`, or `opacity` dip) and pin it to the host's `times`. Example: `eyeModifierReveal` defines its own `scale: [1, 0.85, 1]` over `EYE_BLINK_KEYFRAMES.times` because the eye's `scaleY`-only blink would flatten a diagonal slash if inherited directly.
 6. **Tier 2 with bespoke physics** — write a new motion under `src/modes/motions/`, named `<icon>-<role>.ts`. Design it from "how does this real-world thing actually behave?". If it sits inside or attached to a transforming host, also share the host's kinetic life via principle 2 (direct inherit or synthesized companion as appropriate).
