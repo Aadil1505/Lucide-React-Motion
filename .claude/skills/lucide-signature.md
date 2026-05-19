@@ -48,7 +48,7 @@ Before anything else, read `docs/signatures.md` end-to-end. It's the source of t
   | `*-alert` (9) / `*-warning` (4) | `!` exclamation or alert triangle | `cloud-alert`, `clock-alert`, `badge-alert`, `book-alert`, `circle-alert`, `octagon-alert`, `shield-alert`, `battery-warning`, `mail-warning` |
   | `*-question-mark` (6) | `?` stroke marker | `file-question-mark`, `circle-question-mark`, `badge-question-mark`, `mail-question-mark`, `message-circle-question-mark`, `shield-question-mark` |
   | `*-percent` (5) | `%` stroke marker | `circle-percent`, `square-percent` |
-  | `*-info` (1) / `*-asterisk` (1) | `i` / `*` stroke marker (rare) | `badge-info`, `badge-asterisk` |
+  | `*-info` (1) / `*-asterisk` (1) | `i` / `*` stroke marker (rare) | `badge-info`, `square-asterisk` |
 
   **Every Tier 1 marker is authored through the family-wide modifier-reveal** (`bellModifierReveal`, `heartModifierReveal`, `cloudModifierReveal`, `eyeModifierReveal`): `pathLength` + `opacity` draw-in for path markers, or `scale` + `opacity` for `<circle>` markers (see `bellDotReveal`). Placed LAST in the compose list. Kinetic companion sharing the host's `times` per principle 2.
 
