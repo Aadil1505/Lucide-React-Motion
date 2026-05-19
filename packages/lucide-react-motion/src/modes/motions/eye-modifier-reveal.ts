@@ -1,55 +1,52 @@
 import { matchAnyPath, type Motion } from "../compose";
-import { EYE_BLINK_KEYFRAMES } from "./eye-blink";
 
 /**
- * Eye-family wildcard reveal — `pathLength` + `opacity` draw-in plus
- * the host `eyeBlink`'s scaleY collapse so any state modifier overlaid
- * on the eye (the diagonal slash in `eye-off`, and future markers like
- * plus / minus / check / dot if Lucide ships them) strikes through on
- * top of the eye, individually, then stays anchored to the blink rather
- * than floating statically over a collapsing shell.
+ * Eye-family wildcard reveal — a stable `pathLength` + `opacity` draw-in
+ * that strikes through on top of the eye. Used for any state modifier
+ * overlaid on the eye (the diagonal slash in `eye-off`, and future
+ * markers like plus / minus / check / dot / x if Lucide ships them).
+ *
+ * Crucially, this motion does NOT inherit the host `eyeBlink`'s
+ * `scaleY` collapse, even though the bell / heart / cloud family
+ * modifier-reveals do inherit their host's primary transform. Why the
+ * deviation: the eye's primary motion is asymmetric (scaleY only — a
+ * vertical squeeze). A 45° diagonal slash inheriting a vertical squeeze
+ * would flatten asymmetrically toward the horizontal axis, which reads
+ * as "the slash itself is also blinking" rather than as a strikethrough
+ * sitting on top of a blinking eye. So the overlay stays rigid and the
+ * eye blinks underneath it.
+ *
+ * Rule of thumb (capture in the family skill if extending to more
+ * icons): overlay modifiers inherit the host's primary transform when
+ * that transform is in-plane — rotation, uniform scale, translation
+ * (slash rocks with bell, slash scales with heart). Overlay modifiers
+ * stay rigid when the host's primary transform is axis-asymmetric
+ * (scaleY only, scaleX only) because inheriting distorts the marker
+ * unnaturally.
  *
  * Catches whatever's left after `eyeBlink` matches the registered eye-
- * body paths and pupil circle:
- *
- * - `eye-off`'s diagonal slash `m2 2 20 20`
- * - any future eye-plus / eye-minus / eye-check / eye-x marker stroke
- *
- * Place this LAST in the compose `motions` list — `matchAnyPath` is
- * greedy and would claim eye-body paths if put before `eyeBlink`. Same
- * arrangement as `bell-off`'s `[bellClapper, bellShell,
- * bellModifierReveal]` and `heart-off`'s `[heartBeat,
- * heartModifierReveal]`.
- *
- * `scaleY` uses `inherit: true` so the host transition's duration /
- * delay / repeat propagate down. Without that, motion-dom replaces the
- * parent transition entirely and the per-value block falls back to its
- * default 300 ms — completely out of phase with the eye's blink.
+ * body paths and pupil circle. Place this LAST in the compose `motions`
+ * list — `matchAnyPath` is greedy and would otherwise claim eye-body
+ * paths.
  */
 export const eyeModifierReveal: Motion = {
   matches: matchAnyPath,
   factory: (ctx) => ({
-    rest: { pathLength: 1, opacity: 1, scaleY: 1 },
+    rest: { pathLength: 1, opacity: 1 },
     active: {
       pathLength: [0, 0, 1],
       opacity: [0, 0, 1],
-      scaleY: EYE_BLINK_KEYFRAMES.scaleY,
       transition: {
         duration: ctx.duration,
         delay: ctx.delay + ctx.index * ctx.stagger,
         repeat: ctx.repeat,
         // Marker draws in on its own delayed schedule — holds invisible
-        // through the eye's collapse, strikes in as the eye reopens.
-        pathLength: { inherit: true, ease: "easeOut", times: [0, 0.25, 0.6] },
-        opacity: { inherit: true, ease: "easeOut", times: [0, 0.25, 0.6] },
-        // ScaleY piggybacks on the eye's blink collapse so the marker
-        // stays anchored through the squeeze rather than hovering over
-        // a collapsing shell.
-        scaleY: {
-          inherit: true,
-          ease: ctx.easing,
-          times: EYE_BLINK_KEYFRAMES.times,
-        },
+        // through the eye's collapse, strikes in as the eye reopens, and
+        // stays drawn through the rest of the cycle. No `inherit: true`
+        // on a host transform because the eye's scaleY is asymmetric;
+        // see the docblock above.
+        pathLength: { ease: "easeOut", times: [0, 0.25, 0.6] },
+        opacity: { ease: "easeOut", times: [0, 0.25, 0.6] },
       },
     },
   }),
