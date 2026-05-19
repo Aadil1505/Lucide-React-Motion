@@ -44,10 +44,32 @@ specific behaviour — it almost always does. Generic motion belongs
 in the `mode="pulse"` / `mode="spin"` / etc. *generic modes* for
 consumers who opt in; signatures are about the icon's identity, so
 every signature should have a motion that *only makes sense for
-that icon*. Co-located variants (e.g. composite icons like
-`sun-moon`, `cloud-sun-rain`) usually need bespoke per-element
-motions layered together — moon glows, sun radiates, drop falls,
-snowflake twinkles — not one shared transform applied uniformly.
+that icon*.
+
+**Animate per path — Lucide's path list IS the icon's anatomy.**
+Lucide draws each icon as a list of SVG `<path>` / `<circle>` /
+`<rect>` strokes, and the split is anatomical: the clock face is
+its own path, the hand-pair is another; the bell shell is one,
+the clapper is another, each sound wave is its own; every rain
+drop is its own stroke; the moon crescent and the star sparkle in
+`moon-star` are separate. **Match per path and design a separate
+motion for each anatomical role.** A clock isn't one motion — it's
+a steady face (`clockFace`) plus a ticking hand-pair
+(`clockHands`). A bell is `bellShell` plus `bellClapper` plus
+`bellSoundWaves`. A flame-kindling is `flameFlicker` (the flame
+itself) plus `flameKindlingEmbers` (the wood underneath). A
+composite icon (`sun-moon`, `cloud-sun-rain`, `cloud-hail`) layers
+bespoke per-element motions on top of the shared body — moon
+glows, sun radiates, drop falls, hailstone twinkles, lightning
+flashes — not one shared transform smeared across every path.
+
+The judgement call is per-path, not per-icon: "Could this
+anatomical part move independently of the rest of the icon in
+reality?" If yes, it deserves its own motion module matched by
+`d` data (`matchPathD`, `matchPathDOneOf`, regex over
+`pathAttrs.d`, or geometric predicates). If no (rigid sub-part of
+a larger piece), it can share its parent's motion via the host-
+coupling pattern in section 5.
 
 **2. Cohesion — every path tracks the host.** A modifier (`+`, `−`,
 `×`, `✓`, slash, notification dot, crack zigzag, EKG trace) sitting

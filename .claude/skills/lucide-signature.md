@@ -25,6 +25,27 @@ Then read existing family motions for the quality bar:
 
 The host-coupling pattern (section 5's worked example) is mandatory for any family whose host transforms.
 
+### Animate per path — one motion per anatomical part
+
+Lucide draws each icon as a list of SVG paths/strokes, and Lucide chose to split them along the icon's anatomy: the clock face is one path, the hour-pair stroke is another; the bell shell is one path, the clapper is another; the cloud body is one path, each rain drop is its own. **Treat that path list as the icon's anatomy.** When the depicted object is made of parts that move differently in real life, you author a separate motion per part and match by path data — not one shared motion smeared across everything.
+
+Worked examples that already shipped:
+
+- **Bell** has shell (rocks on the mount, ~12°), clapper (free pendulum inside, ~22°), and sound waves (radiate outward from the mount). Three different paths, three different motions, three different physical behaviours — but they share a coupled rhythm via `BELL_SHELL_KEYFRAMES`.
+- **Clock** has face (mostly steady, tiny breath) and a combined hand-pair (clockwise tick); composite variants add a modifier (alert / arrow / check / plus) that reveals separately. `clockFace` + `clockHands` + `clockModifierReveal` — three motions matched per path role.
+- **Flame-kindling** has the flame teardrop (flicker, sway, brightness) AND the two crossed wood sticks (ember opacity glow, slight inherited sway). Two motions per role; the flame dances and the kindling glows independently.
+- **Cloud-hail** has the cloud body (gentle breath), three bigger vertical hail pieces (draw-down via `cloudRainDrops`), and three round hailstones (contraction twinkle via `cloudSnowDots`). Three concurrent motions inside one icon.
+- **Moon-star** has the crescent (opacity-only reflective glow) AND the small four-pointed sparkle (contraction twinkle pivoted at the star's own centre). Two motions, two different physics, two different transform origins of concern.
+
+How to apply this in practice:
+
+1. Open `src/generated/<icon>.tsx` and **enumerate the `nodes` array out loud** — every entry corresponds to one drawable stroke. Label each one by what it depicts (handle, canopy, slash, ray, sparkle, …).
+2. For each anatomical role, decide its own physical motion. If two roles share the same physics (e.g. the upper and lower fragments of a split `cloud-off` body both want the cloud's gentle breath), one motion can cover both via a shared `d`-list matcher. If two roles need different physics, they get separate motion modules.
+3. Match by **path data**, not index — `matchPathD`, `matchPathDOneOf`, a regex over `ctx.pathAttrs.d`, or geometric predicates over `ctx.pathTag` / `pathAttrs.cx` / `cy` / `r`. The path list is anatomy; the index list is incidental ordering.
+4. If a path's role doesn't have a clear real-life motion (e.g. a decorative state marker), use the family's coupled modifier reveal — but it still needs `inherit: true` per-value transitions so the marker stays anchored to whatever the host does.
+
+When in doubt, ask: "Could this anatomical part move independently of the rest of the icon in reality?" If yes, it deserves its own motion. If no (rigid sub-part of a larger piece), it can share its parent's motion. Either way, the decision happens at the **path level**, not the icon level.
+
 ### Anti-patterns — what NOT to do
 
 These are mistakes prior attempts have made; the user has explicitly rejected them, and you must not repeat them:
@@ -34,6 +55,7 @@ These are mistakes prior attempts have made; the user has explicitly rejected th
 - **"Scale up to make the motion punchier."** Per principle 3 and the scaled-stroke gotcha. The right answer is almost always contraction (`scale ≤ 1`), and the brightness/character comes from opacity dips or per-axis transforms (scaleY only, rotation pivoted at a meaningful point).
 - **"Match by `ctx.index`."** Lucide reorders paths. Always match by `d` data (`matchPathD`, `matchPathDOneOf`, or a regex over `pathAttrs.d`) or by SVG element geometry (`pathTag` + `cx`/`cy`/`r` etc.).
 - **"Use `matchAnyPath` as the only matcher in a multi-element signature."** It'll claim every path including ones that need bespoke physics. `matchAnyPath` belongs LAST in a compose list, only as a wildcard fallback.
+- **"One motion for the whole icon when the icon has multiple moving parts."** If the icon depicts an object whose anatomical parts move differently in real life — clock face vs hands, bell shell vs clapper vs waves, flame vs kindling, cloud vs rain drops — you need one motion *per role* matched by path data, not one shared transform smeared across every path. See "Animate per path" above.
 
 ### Future feature you might be asked about
 
