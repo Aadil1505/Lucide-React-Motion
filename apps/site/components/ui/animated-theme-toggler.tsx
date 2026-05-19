@@ -246,7 +246,7 @@ export const AnimatedThemeToggler = ({
         {mounted && isDark ? (
           <Sun trigger="hover" />
         ) : (
-          <Moon trigger="hover" />
+          <Moon trigger="hover"/>
         )}
       </span>
       <span className="sr-only">Toggle theme</span>
